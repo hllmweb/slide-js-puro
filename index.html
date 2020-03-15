@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide</title>
+    <style>
+       * {  
+            margin: 0; 
+            padding: 0;
+            box-sizing: border-box
+        }
+        html, body{
+            width: 100%;
+            height: 100%;
+        }
+        a, img{
+            border:0;
+        }
+        #slide-wrapper{
+            max-width: 100%;
+            height: 500px;   
+            overflow: hidden;
+            position: relative;
+        }
+        #slide-wrapper:hover span{
+            opacity: 0.76;
+            filter:alpha(opacity=76);
+        }
+        #slide-figure{
+            position: relative; 
+            z-index: 1;
+        }
+        #slide-figure div { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            opacity: 0;
+            filter:alpha(opacity=0);
+        }
+        #slide-figure img{
+            width: 100%;
+            height: auto;
+            position: relative; 
+        }
+
+        .fade{
+            -webkit-transition:all ease-out 0.5s;
+			-moz-transition:all ease-out 0.5s;
+			-o-transition:all ease-out 0.5s;
+			-ms-transition:all ease-out 0.5s;
+			transition:all ease-out 0.5s;
+        }
+        .ativo {
+            opacity: 1 !important; 
+            filter:alpha(opacity=100) !important;
+        }
+		span {
+            background: #599626; 
+            cursor: pointer; 
+            opacity: 0;
+            filter:alpha(opacity=0); 
+            position: absolute; 
+            bottom: 40%; 
+            width: 43px; 
+            height: 43px; 
+            z-index: 5;
+        }
+		.next {right: 10px;}
+        .next:before,
+        .next:after {
+            left: 21px;
+        }
+		.next:before {
+			-webkit-transform: rotate(-42deg);
+			top: 5px;
+		}
+		.next:after {
+			-webkit-transform: rotate(-132deg);
+			top: 19px;
+		}
+        .next:before,
+        .next:after,
+        .prev:before,
+        .prev:after {
+            content: "";
+			height: 20px;
+			background: #fff;
+			width: 1px;
+			position: absolute;
+        }
+        .prev {
+            left: 10px;
+        }
+        .prev:before,
+        .prev:after {
+            left: 18px;
+        }
+		.prev:before {
+			-webkit-transform: rotate(42deg);
+			top: 5px;
+		}
+		.prev:after {
+			-webkit-transform: rotate(132deg);
+			top: 19px;
+		}
+        .texto{
+            font-size:42px;
+        }
+        
+        
+        @media (min-width: 768px) and (max-width: 1024px) {
+            #slide-wrapper{
+                height: 350px;
+                background-color: blue;
+            }
+        }
+        @media (min-width: 481px) and (max-width: 767px) {
+            #slide-wrapper{
+                height: 250px;
+            }
+        }  
+        @media (max-width: 480px) {
+            #slide-wrapper{
+                height: 160px;
+                background-color: red;
+            }
+        }    
+    </style>
+</head>
+<body>
+
+
+    <div id="slide-wrapper">
+        <span class="prev fade"></span>
+        <span class="next fade"></span>
+        <div id="slide-figure">
+            <div class="fade"><a href=""><img src="img-1.png" style="width: 100%;"></a></div>
+            <div class="fade"><a href=""><img src="img-2.png" style="width: 100%;"></a></div>
+            <div class="fade"><a href=""><img src="img-3.png" style="width: 100%;"></a></div>
+        </div>
+    </div>
+    
+
+    <div class="texto">teteste</div>
+    <script>
+        function iniApp(){  
+            var settings = {
+                
+                //inicio
+                primeiraImg: function(){
+                    elemento = document.querySelector("#slide-figure div:first-child");
+                    elemento.classList.add("ativo");
+                },
+                
+                //carrega slide
+                slide: function(){
+                    elemento = document.querySelector(".ativo");
+
+                    if(elemento.nextElementSibling){
+                        elemento.nextElementSibling.classList.add("ativo");
+                        elemento.classList.remove("ativo");
+                    }else{
+                        elemento.classList.remove("ativo");
+                        settings.primeiraImg();
+                    }                
+                },
+
+                //proxima imagem
+                proximo: function(){
+                    clearInterval(intervalo);
+                    elemento = document.querySelector(".ativo");
+                    
+                    if(elemento.nextElementSibling){
+                        elemento.nextElementSibling.classList.add("ativo");
+                        elemento.classList.remove("ativo");
+                    }else{
+                        elemento.classList.remove("ativo");
+                        settings.primeiraImg();
+                    }
+                    intervalo = setInterval(settings.slide,4000);
+                },    
+
+                //anterior imagem
+                anterior: function(){
+                    clearInterval(intervalo);
+                    elemento = document.querySelector(".ativo");
+                    
+                    if(elemento.previousElementSibling){
+                        elemento.previousElementSibling.classList.add("ativo");
+                        elemento.classList.remove("ativo");
+                    }else{
+                        elemento.classList.remove("ativo");						
+                        elemento = document.querySelector("#slide-figure div:last-child");
+                        elemento.classList.add("ativo");
+                    }
+                    intervalo = setInterval(settings.slide,4000);
+                },  
+            
+            }
+
+
+            //chama o slide
+            settings.primeiraImg();
+            
+            //chama o slide à um determinado tempo
+            var intervalo = setInterval(settings.slide,4000);
+            document.querySelector(".next").addEventListener("click",settings.proximo,false);
+            document.querySelector(".prev").addEventListener("click",settings.anterior,false);
+        }
+
+        window.addEventListener("load",iniApp,false);
+    </script>
+</body>
+</html>
